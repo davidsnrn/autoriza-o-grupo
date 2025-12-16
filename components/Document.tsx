@@ -7,13 +7,13 @@ interface DocumentProps {
   students: Student[];
 }
 
-// Configuração única: 30 itens por página, conforme solicitado
-const ITEMS_PER_PAGE = 30;
+// Configuração única: 25 itens por página, conforme solicitado
+const ITEMS_PER_PAGE = 25;
 
 export const Document: React.FC<DocumentProps> = ({ students }) => {
   const formattedDate = useMemo(() => getFormattedDate(), []);
 
-  // Lógica simplificada: divide a lista em blocos de 30
+  // Lógica simplificada: divide a lista em blocos de 25
   const pages = useMemo(() => {
     const chunks: Student[][] = [];
     for (let i = 0; i < students.length; i += ITEMS_PER_PAGE) {
