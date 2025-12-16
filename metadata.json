@@ -1,0 +1,5 @@
+{
+  "name": "Autorização de Entrada COAPAC",
+  "description": "Sistema de geração de listas de autorização para entrada em sala de aula (IFRN Campus Nova Cruz).",
+  "requestFramePermissions": []
+}
