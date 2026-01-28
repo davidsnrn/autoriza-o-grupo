@@ -28,7 +28,7 @@ export const Document: React.FC<DocumentProps> = ({ students }) => {
   const totalPages = pages.length;
 
   return (
-    <div className="flex flex-col gap-8 print:gap-0 print:block bg-transparent">
+    <div className="flex flex-col gap-8 print:gap-0 print:block bg-transparent print:m-0 print:p-0">
       {pages.map((pageStudents, pageIndex) => {
         const isFirstPage = pageIndex === 0;
         const isLastPage = pageIndex === pages.length - 1;
@@ -39,11 +39,11 @@ export const Document: React.FC<DocumentProps> = ({ students }) => {
         return (
           <div 
             key={pageIndex}
-            className="bg-white w-[210mm] h-[296mm] px-[15mm] py-[10mm] mx-auto shadow-xl print:shadow-none print:w-full print:m-0 print:p-[15mm] relative flex flex-col box-border overflow-hidden"
+            className="bg-white w-[210mm] h-[295mm] px-[15mm] py-[10mm] mx-auto shadow-xl print:shadow-none print:w-[210mm] print:h-[297mm] print:m-0 print:p-[15mm] relative flex flex-col box-border overflow-hidden"
             style={{ 
-              // Evita quebra de página na última folha para não gerar página em branco
-              pageBreakAfter: isLastPage ? 'avoid' : 'always',
-              breakAfter: isLastPage ? 'avoid' : 'page'
+              // Força a quebra de página apenas se não for a última
+              pageBreakAfter: isLastPage ? 'auto' : 'always',
+              breakAfter: isLastPage ? 'auto' : 'page'
             }}
           >
             {/* Header */}
@@ -86,7 +86,7 @@ export const Document: React.FC<DocumentProps> = ({ students }) => {
             )}
 
             {/* Tabela de Alunos */}
-            <div className="w-full flex-grow">
+            <div className="w-full">
               <table className="w-full border-collapse text-[11px]">
                 <thead>
                   <tr className="bg-gray-100 print:bg-gray-100">
@@ -113,15 +113,16 @@ export const Document: React.FC<DocumentProps> = ({ students }) => {
               </table>
             </div>
 
-            {/* Rodapé */}
+            {/* Rodapé fixado embaixo */}
             <div className="mt-auto">
               {isLastPage ? (
                 <div className="pt-2">
-                  <div className="text-center italic text-sm mb-4">
+                  <div className="text-center italic text-sm mb-2">
                     {formattedDate}
                   </div>
-                  <div className="flex justify-center mb-2">
-                    <div className="w-1/2 text-center border-t border-black pt-2 text-sm">
+                  {/* ESPAÇO AMPLO PARA ASSINATURA */}
+                  <div className="flex justify-center mt-20 mb-4">
+                    <div className="w-[300px] text-center border-t border-black pt-2 text-sm font-semibold uppercase">
                       Assistente de Alunos
                     </div>
                   </div>

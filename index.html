@@ -23,16 +23,16 @@
           margin: 0;
           size: A4;
         }
-        body {
+        html, body {
+          height: 100%;
+          margin: 0 !important;
+          padding: 0 !important;
+          overflow: hidden;
+          background-color: white !important;
           -webkit-print-color-adjust: exact;
           print-color-adjust: exact;
-          background-color: white !important;
-          margin: 0;
-          padding: 0;
         }
-        /* Garante que o container de preview não apareça na impressão */
         #root {
-          width: 100%;
           margin: 0;
           padding: 0;
         }
