@@ -20,26 +20,33 @@
     <style>
       @media print {
         @page {
-          margin: 0.5cm; /* Margem mínima para evitar quebra acidental */
-          size: auto;
+          margin: 1cm; /* Margem padrão de segurança */
+          size: A4 portrait;
         }
         html, body {
-          height: auto !important;
+          background-color: white !important;
           margin: 0 !important;
           padding: 0 !important;
+          height: auto !important;
           overflow: visible !important;
-          background-color: white !important;
-          -webkit-print-color-adjust: exact;
-          print-color-adjust: exact;
         }
         #root {
+          width: 100%;
           margin: 0;
           padding: 0;
-          width: 100%;
+        }
+        /* Remove qualquer sombra ou background cinza na impressão */
+        .no-print-shadow {
+          box-shadow: none !important;
+          border: none !important;
         }
       }
+      /* Estilo para bordas mais grossas na tabela */
+      .border-thick {
+        border-width: 1.5px !important;
+        border-color: black !important;
+      }
     </style>
-    <!-- Importmap configurado para React 19 -->
     <script type="importmap">
     {
       "imports": {
