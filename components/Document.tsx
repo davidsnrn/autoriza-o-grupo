@@ -7,17 +7,20 @@ interface DocumentProps {
   students: Student[];
 }
 
-// Configuração única: 25 itens por página, conforme solicitado
+// Configuração única: 25 itens por página
 const ITEMS_PER_PAGE = 25;
 
 export const Document: React.FC<DocumentProps> = ({ students }) => {
   const formattedDate = useMemo(() => getFormattedDate(), []);
 
-  // Lógica simplificada: divide a lista em blocos de 25
+  // Lógica: divide a lista em blocos de 25
   const pages = useMemo(() => {
     const chunks: Student[][] = [];
-    for (let i = 0; i < students.length; i += ITEMS_PER_PAGE) {
-      chunks.push(students.slice(i, i + ITEMS_PER_PAGE));
+    // Garante que se não houver alunos, apareça pelo menos uma página
+    const list = students.length > 0 ? students : [{ id: '', name: '' }];
+    
+    for (let i = 0; i < list.length; i += ITEMS_PER_PAGE) {
+      chunks.push(list.slice(i, i + ITEMS_PER_PAGE));
     }
     return chunks;
   }, [students]);
@@ -25,20 +28,23 @@ export const Document: React.FC<DocumentProps> = ({ students }) => {
   const totalPages = pages.length;
 
   return (
-    <div className="flex flex-col gap-8 print:gap-0 print:block">
+    <div className="flex flex-col gap-8 print:gap-0 print:block bg-transparent">
       {pages.map((pageStudents, pageIndex) => {
         const isFirstPage = pageIndex === 0;
         const isLastPage = pageIndex === pages.length - 1;
         const pageNumber = pageIndex + 1;
         
-        // Calcular o índice inicial para a numeração da tabela
         const startIndex = pageIndex * ITEMS_PER_PAGE;
 
         return (
           <div 
             key={pageIndex}
-            className="bg-white w-[210mm] h-[297mm] px-[15mm] py-[10mm] mx-auto shadow-xl print:shadow-none print:w-full print:h-[297mm] print:m-0 print:p-[15mm] relative flex flex-col box-border overflow-hidden print:break-after-page"
-            style={{ pageBreakAfter: isLastPage ? 'auto' : 'always' }}
+            className="bg-white w-[210mm] h-[296mm] px-[15mm] py-[10mm] mx-auto shadow-xl print:shadow-none print:w-full print:m-0 print:p-[15mm] relative flex flex-col box-border overflow-hidden"
+            style={{ 
+              // Evita quebra de página na última folha para não gerar página em branco
+              pageBreakAfter: isLastPage ? 'avoid' : 'always',
+              breakAfter: isLastPage ? 'avoid' : 'page'
+            }}
           >
             {/* Header */}
             <div className="flex items-center mb-2 h-[65px]">
@@ -91,7 +97,7 @@ export const Document: React.FC<DocumentProps> = ({ students }) => {
                 </thead>
                 <tbody>
                   {pageStudents.map((student, i) => (
-                    <tr key={i} className="">
+                    <tr key={i} className="hover:bg-gray-50 print:hover:bg-transparent">
                       <td className="border border-black px-2 py-1 text-center h-6">
                         {student.name || student.id ? startIndex + i + 1 : '-'}
                       </td>
@@ -103,14 +109,12 @@ export const Document: React.FC<DocumentProps> = ({ students }) => {
                       </td>
                     </tr>
                   ))}
-                  {/* Linhas vazias removidas conforme solicitado */}
                 </tbody>
               </table>
             </div>
 
             {/* Rodapé */}
             <div className="mt-auto">
-              
               {isLastPage ? (
                 <div className="pt-2">
                   <div className="text-center italic text-sm mb-4">
@@ -135,7 +139,6 @@ export const Document: React.FC<DocumentProps> = ({ students }) => {
                  )}
               </div>
             </div>
-
           </div>
         );
       })}
