@@ -7,16 +7,14 @@ interface DocumentProps {
   students: Student[];
 }
 
-// Configuração única: 25 itens por página
-const ITEMS_PER_PAGE = 25;
+// Reduzi para 22 itens por página para garantir que o rodapé e assinatura caibam com folga
+const ITEMS_PER_PAGE = 22;
 
 export const Document: React.FC<DocumentProps> = ({ students }) => {
   const formattedDate = useMemo(() => getFormattedDate(), []);
 
-  // Lógica: divide a lista em blocos de 25
   const pages = useMemo(() => {
     const chunks: Student[][] = [];
-    // Garante que se não houver alunos, apareça pelo menos uma página
     const list = students.length > 0 ? students : [{ id: '', name: '' }];
     
     for (let i = 0; i < list.length; i += ITEMS_PER_PAGE) {
@@ -33,21 +31,19 @@ export const Document: React.FC<DocumentProps> = ({ students }) => {
         const isFirstPage = pageIndex === 0;
         const isLastPage = pageIndex === pages.length - 1;
         const pageNumber = pageIndex + 1;
-        
         const startIndex = pageIndex * ITEMS_PER_PAGE;
 
         return (
           <div 
             key={pageIndex}
-            className="bg-white w-[210mm] h-[295mm] px-[15mm] py-[10mm] mx-auto shadow-xl print:shadow-none print:w-[210mm] print:h-[297mm] print:m-0 print:p-[15mm] relative flex flex-col box-border overflow-hidden"
+            className="bg-white w-[210mm] min-h-[280mm] px-[15mm] py-[10mm] mx-auto shadow-xl print:shadow-none print:w-full print:min-h-0 print:h-auto print:mx-0 print:p-0 relative flex flex-col box-border overflow-hidden"
             style={{ 
-              // Força a quebra de página apenas se não for a última
-              pageBreakAfter: isLastPage ? 'auto' : 'always',
-              breakAfter: isLastPage ? 'auto' : 'page'
+              pageBreakAfter: isLastPage ? 'avoid' : 'always',
+              breakAfter: isLastPage ? 'avoid' : 'page'
             }}
           >
             {/* Header */}
-            <div className="flex items-center mb-2 h-[65px]">
+            <div className="flex items-center mb-4 h-[65px]">
               <div className="flex-shrink-0 mr-4">
                 <IFRNLogo className="w-[45px] h-[60px]" />
               </div>
@@ -58,10 +54,10 @@ export const Document: React.FC<DocumentProps> = ({ students }) => {
               </div>
             </div>
 
-            {/* Conteúdo específico da Primeira Página */}
+            {/* Títulos */}
             {isFirstPage && (
               <>
-                <div className="text-center mb-3">
+                <div className="text-center mb-4">
                   <h1 className="text-[16px] font-bold uppercase border-b-2 border-black inline-block pb-1 mb-1">
                     Autorização para Entrada em Sala de Aula
                   </h1>
@@ -70,13 +66,12 @@ export const Document: React.FC<DocumentProps> = ({ students }) => {
                   </h2>
                 </div>
 
-                <div className="bg-gray-50 border border-gray-300 p-2 mb-2 text-center text-xs font-bold print:bg-transparent print:border-gray-400">
+                <div className="bg-gray-50 border border-gray-300 p-2 mb-4 text-center text-xs font-bold print:bg-transparent print:border-gray-400">
                   Informo que os alunos listados abaixo compareceram à COAPAC para apresentar suas justificativas, as quais já foram verificadas e devidamente registradas.
                 </div>
               </>
             )}
 
-            {/* Cabeçalho de continuação para páginas seguintes */}
             {!isFirstPage && (
               <div className="text-center mb-4">
                 <h2 className="text-[14px] font-bold uppercase text-gray-500">
@@ -85,8 +80,8 @@ export const Document: React.FC<DocumentProps> = ({ students }) => {
               </div>
             )}
 
-            {/* Tabela de Alunos */}
-            <div className="w-full">
+            {/* Tabela */}
+            <div className="w-full mb-6">
               <table className="w-full border-collapse text-[11px]">
                 <thead>
                   <tr className="bg-gray-100 print:bg-gray-100">
@@ -113,26 +108,24 @@ export const Document: React.FC<DocumentProps> = ({ students }) => {
               </table>
             </div>
 
-            {/* Rodapé fixado embaixo */}
-            <div className="mt-auto">
-              {isLastPage ? (
+            {/* Rodapé e Assinatura */}
+            <div className="mt-4">
+              {isLastPage && (
                 <div className="pt-2">
-                  <div className="text-center italic text-sm mb-2">
+                  <div className="text-center italic text-sm mb-12">
                     {formattedDate}
                   </div>
-                  {/* ESPAÇO AMPLO PARA ASSINATURA */}
-                  <div className="flex justify-center mt-20 mb-4">
-                    <div className="w-[300px] text-center border-t border-black pt-2 text-sm font-semibold uppercase">
+                  {/* Espaço generoso para assinatura conforme pedido */}
+                  <div className="flex justify-center mt-16 mb-6">
+                    <div className="w-[350px] text-center border-t border-black pt-3 text-sm font-bold uppercase tracking-wide">
                       Assistente de Alunos
                     </div>
                   </div>
                 </div>
-              ) : (
-                 <div className="h-[20px]"></div>
               )}
 
               {/* Numeração de Página */}
-              <div className="h-[20px] flex items-end justify-end">
+              <div className="flex justify-end mt-2">
                  {totalPages > 1 && (
                     <span className="text-[10px] text-gray-500 print:text-gray-600">
                       Página {pageNumber} de {totalPages}
